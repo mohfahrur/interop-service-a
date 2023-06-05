@@ -1,0 +1,23 @@
+
+syntax = "proto3";
+
+option go_package = "github.com/mohfahrur/interop-service-a/grpc/item";
+option java_multiple_files = true;
+option java_package = "io.grpc.interop-service-a.grpc.item";
+option java_outer_classname = "ItemProto";
+
+package item;
+
+service ItemService {
+  rpc GetItem (ItemRequest) returns (ItemReply) {}
+}
+
+message ItemRequest {
+  string name = 1;
+}
+
+message ItemReply {
+  string message = 1;
+}
+
+// protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative ./item.proto
