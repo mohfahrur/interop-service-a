@@ -5,10 +5,11 @@ import (
 
 	googleD "github.com/mohfahrur/interop-service-a/domain/google"
 	interopcD "github.com/mohfahrur/interop-service-a/domain/interopc"
+	"github.com/mohfahrur/interop-service-a/entity"
 )
 
 type TicketAgent interface {
-	Buy(user string, item string) (err error)
+	SendEmail(user string, item string) (err error)
 }
 
 type TicketUsecase struct {
@@ -25,7 +26,9 @@ func NewTicketUsecase(
 		interopcDomain: interopcD}
 }
 
-func (uc *TicketUsecase) UpdateEmailNotificationStatus(user string, status string) (err error) {
+func (uc *TicketUsecase) SendEmail(entity.SendEmailRequest) (err error) {
+	// uc.googleDomain.CreateMessage()
+	// uc.googleDomain.SendEmail()
 	log.Println("send status to interopC")
 	return
 }
