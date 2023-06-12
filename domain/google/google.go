@@ -1,52 +1,43 @@
 package google
 
 import (
-	"context"
-	"encoding/base64"
-	"fmt"
-	"log"
-
-	"golang.org/x/oauth2/google"
-	gmail "google.golang.org/api/gmail/v1"
-	"google.golang.org/api/option"
+	"gopkg.in/gomail.v2"
 )
 
 type GoogleAgent interface {
-	CreateMessage(sender, recipient, subject, body string) *gmail.Message
-	SendEmail(userID string, message *gmail.Message) error
+	SendEmail(userEmail, Subject, messageBody string) error
 }
 
 type GoogleDomain struct {
-	gmailService *gmail.Service
+	Sender   string
+	Password string
 }
 
-func NewGoogleDomain(credentialsFile []byte) *GoogleDomain {
-	creds, err := google.CredentialsFromJSON(context.Background(), credentialsFile, gmail.MailGoogleComScope)
-	if err != nil {
-		log.Fatalf("failed to read service account credentials: %v", err)
-	}
+func NewGoogleDomain(sender, password string) *GoogleDomain {
 
-	service, err := gmail.NewService(context.Background(), option.WithCredentials(creds))
-	if err != nil {
-		log.Fatalf("failed to create Gmail service: %v", err)
-	}
-	return &GoogleDomain{gmailService: service}
+	return &GoogleDomain{
+		Sender:   sender,
+		Password: password}
 }
 
-func (d *GoogleDomain) CreateMessage(sender, recipient, subject, body string) *gmail.Message {
-	message := &gmail.Message{
-		Raw: base64.RawURLEncoding.EncodeToString([]byte(
-			fmt.Sprintf("From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n%s", sender, recipient, subject, body))),
-	}
+func (d *GoogleDomain) SendEmail(userEmail, Subject, messageBody string) error {
+	// Replace with your Gmail credentials
 
-	return message
-}
+	message := gomail.NewMessage()
+	message.SetHeader("From", d.Sender)
+	message.SetHeader("To", userEmail)
+	message.SetHeader("Subject", Subject)
+	message.SetBody("text/plain", messageBody)
 
-func (d *GoogleDomain) SendEmail(userID string, message *gmail.Message) error {
-	_, err := d.gmailService.Users.Messages.Send(userID, message).Do()
+	// Create a new SMTP client
+	dialer := gomail.NewDialer("smtp.gmail.com", 587, d.Sender, d.Password)
+
+	// Send the email
+	err := dialer.DialAndSend(message)
 	if err != nil {
-		return fmt.Errorf("failed to send email: %v", err)
+		panic(err)
 	}
 
+	println("Email sent successfully!")
 	return nil
 }

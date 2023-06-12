@@ -18,5 +18,6 @@ func NewinteropcDomain() *InteropcDomain {
 
 func (d *InteropcDomain) UpdateEmailNotificationStatus(user string, status string) (err error) {
 	log.Println("send status to interopC")
+	//send request to interop c backend
 	return
 }
