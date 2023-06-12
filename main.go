@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -14,19 +13,11 @@ import (
 )
 
 func main() {
-	pwd, err := os.Getwd()
-	if err != nil {
-		log.Println(err)
-		return
-	}
+	log.SetFlags(log.Llongfile)
+	email := os.Getenv("email")
+	password := os.Getenv("password")
 
-	credentialsFile, err := ioutil.ReadFile(pwd + "/credential.json")
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	googleDomain := googleD.NewGoogleDomain(credentialsFile)
+	googleDomain := googleD.NewGoogleDomain(email, password)
 	interopcDomain := interopcD.NewinteropcDomain()
 	ticketUsecase := ticketUC.NewTicketUsecase(*googleDomain, *interopcDomain)
 
@@ -35,10 +26,11 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "pong from service a",
 		})
+		return
 	})
 	r.POST("/send-email", func(c *gin.Context) {
 		var sendEmailReq entity.SendEmailRequest
-		err = c.BindJSON(&sendEmailReq)
+		err := c.BindJSON(&sendEmailReq)
 		if err != nil {
 			log.Println(err)
 			c.JSON(http.StatusBadRequest, gin.H{

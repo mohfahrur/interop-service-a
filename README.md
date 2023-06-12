@@ -1,4 +1,4 @@
 # interop-service-a
 
-create service account and get credential
-https://cloud.google.com/iam/docs/service-accounts-create
+create app password
+https://support.google.com/mail/answer/185833?hl=en
