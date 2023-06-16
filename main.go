@@ -34,7 +34,7 @@ func main() {
 		if err != nil {
 			log.Println(err)
 			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "bad request",
+				"message": "format request tidak sesuai",
 			})
 			return
 		}
