@@ -3,6 +3,7 @@ package ticket
 import (
 	"fmt"
 	"log"
+	"time"
 
 	googleD "github.com/mohfahrur/interop-service-a/domain/google"
 	interopcD "github.com/mohfahrur/interop-service-a/domain/interopc"
@@ -29,12 +30,14 @@ func NewTicketUsecase(
 
 func (uc *TicketUsecase) SendEmail(req entity.SendEmailRequest) (err error) {
 	status := "success"
-	msg := fmt.Sprintf("terima kasih %s sudah melakukan pembelian tiket film %s",
+	currentTime := time.Now().Format("Monday, 02 January 2006 15:04")
+	msg := fmt.Sprintf("Terima kasih %s telah melakukan pembelian tiket film %s\ntanggal pembelian: %s",
 		req.User,
-		req.Item)
+		req.Item,
+		currentTime)
 
 	err = uc.googleDomain.SendEmail(req.Email,
-		"notifikasi pembelian",
+		"Notifikasi Pembelian",
 		msg)
 	if err != nil {
 		log.Println(err)

@@ -6,12 +6,20 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	googleD "github.com/mohfahrur/interop-service-a/domain/google"
 	interopcD "github.com/mohfahrur/interop-service-a/domain/interopc"
 	"github.com/mohfahrur/interop-service-a/entity"
 	ticketUC "github.com/mohfahrur/interop-service-a/usecase/ticket"
 )
 
+func init() {
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+}
 func main() {
 	log.SetFlags(log.Llongfile)
 	email := os.Getenv("email")
